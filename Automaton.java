@@ -9,20 +9,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.Scanner;
 
 public class Automaton {
 
-	private ArrayList<boolean[]> ECA = new ArrayList<>(7);
-	private char[] ruleSet = new char[8];
-	private int ruleNum;
-	private boolean[] initState = new boolean[10];
-	private ArrayList<Character> currentGen = new ArrayList<Character>(initState.length);
-	private char falseSymbol = '0', trueSymbol = '1';
+	protected char falseSymbol = '0', trueSymbol = '1';
+	protected char[] ruleSet = new char[8];
+	protected ArrayList<boolean[]> ECA = new ArrayList<>(7);
+	protected int ruleNum;
+	protected boolean[] initState = new boolean[10];
+	protected ArrayList<Character> currentGen = new ArrayList<Character>(initState.length);
 	private String test; 
 	
-	String state;
+	Rule rule = new Rule();
 
 	public Automaton(int ruleNum, boolean[] initState) {
 		
@@ -30,7 +29,7 @@ public class Automaton {
 		this.ruleNum = ruleNum;
 		this.initState = initState;
 		ECA.add(initState);
-		ruleSetter(ruleNum);
+		rule.ruleSetter(ruleNum, ruleSet, falseSymbol, trueSymbol);
 
 	}
 
@@ -49,7 +48,7 @@ public class Automaton {
 				initState[i] = false;
 			}
 			
-			ruleSetter(ruleNum);
+			rule.ruleSetter(ruleNum, ruleSet, falseSymbol, trueSymbol);
 			setTrueSymbol(trueSymbol);
 			setFalseSymbol(falseSymbol);
 			test = initS;
@@ -60,11 +59,10 @@ public class Automaton {
 	}
 	public boolean [] convertor(String genState) {
 		
-		this.state = genState;
 		ECA.clear();
 		
-		for(int i = 0; i < state.length(); i++) {
-			Character temp = state.charAt(i);
+		for(int i = 0; i < genState.length(); i++) {
+			Character temp = genState.charAt(i);
 			if(temp.equals(trueSymbol)) {
 				initState[i] = true;
 			}
@@ -80,39 +78,20 @@ public class Automaton {
 		return ruleNum;
 
 	}
-
-	public void ruleSetter(int ruleNum) { //possibly move to rule
-
-		String binaryS = Integer.toBinaryString(ruleNum);
-		int missingLength = 8 - binaryS.length(), i;
-		// Add leading zeros
-		for(i = 0; i < missingLength; i++) {
-			binaryS = 0 + binaryS;
-		}
-		for (int j = ruleSet.length - 1; j >= 0; j--) {
-            ruleSet[j] = falseSymbol;
-        }
-        for (i = ruleSet.length - 1; i >= 0; i--){
-            if (binaryS.charAt(i) == '1'){
-                ruleSet[i] = '1';
-            }
-            else{
-                ruleSet[i] = '0';
-            }
-        }
-	}	
-
+	
 	public void evolve(int numSteps) {
-
+		
 		for (int i = 0; i < numSteps; i++) {
 			generate(ruleNum);
+			//			Generation generator = new Generation();
+//			generator.generate(ECA, ruleNum, initState, currentGen, ruleSet, falseSymbol, trueSymbol);
 		}
 
 	}
 
 	public void generate(int ruleNum) { // move to generate
 		int leftCell, middleCell, rightCell;
-		ruleSetter(ruleNum);
+		rule.ruleSetter(ruleNum, ruleSet, falseSymbol, trueSymbol);
 		for (int i = 0; i < initState.length; i++) {
 			if (i == 0) {
 				leftCell = initState.length - 1;
@@ -207,7 +186,6 @@ public class Automaton {
 				binaryS = binaryS + getStateString(i);
 			}
 		}
-		System.out.println(binaryS);
 		return binaryS;
 
 	}
