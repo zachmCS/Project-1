@@ -1,24 +1,29 @@
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-public class Generation extends Automaton{
-
+/**
+ * 
+ * @author zachL
+ * The class Generation contains a method that evolves the ECA by setting left, middle,
+ * and right cells based off where they are in a boolean array then it generates based off
+ * a rule set. 
+ */
+public class Generation{
 	
-
-
-	public Generation(int ruleNum, boolean[] initState) {
-		super(ruleNum, initState);
-		// TODO Auto-generated constructor stub
-	}
-
-	public Generation(String fileName) throws FileNotFoundException {
-		super(fileName);
-		// TODO Auto-generated constructor stub
+	public Generation() {
+		
 	}
 
 	Rule rule = new Rule();
 	
-	
+	/**
+	 * This method is the generator for the ECA.
+	 * @param ECA
+	 * @param ruleNum
+	 * @param initState
+	 * @param currentGen
+	 * @param ruleSet
+	 * @param falseSymbol
+	 * @param trueSymbol
+	 */
 	public void generate(ArrayList<boolean[]> ECA, int ruleNum, boolean[] initState, ArrayList<Character> currentGen, char[] ruleSet, char falseSymbol, char trueSymbol) {
 		int leftCell, middleCell, rightCell;
 		rule.ruleSetter(ruleNum, ruleSet, falseSymbol, trueSymbol);
@@ -61,7 +66,12 @@ public class Generation extends Automaton{
 		ECA.add(initState);
 		currentGen.clear();
 	}
-	
+	/**
+	 * This method converts binary elements from currentGen to false and true with respect to 
+	 * 0 and 1. 
+	 * @param currentGen
+	 * @return
+	 */
 	public boolean[] binToBool(ArrayList<Character> currentGen) {
 		boolean[] temp = new boolean[currentGen.size()];
 		for (int i = 0; i < currentGen.size(); i++) {
